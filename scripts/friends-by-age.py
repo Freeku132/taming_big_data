@@ -28,9 +28,7 @@ rdd = lines.map(parseLine)
 # averagesByAge = reducedByAge.mapValues(lambda x: x[0]/x[1])
 
 totalByAge = rdd.mapValues(lambda age: (age, 1)).reduceByKey(lambda x, y: (x[0] + y[0], x[1] + y[1]))
-
 averagesByAge = totalByAge.mapValues(lambda x: x[0]/x[1])
-
 results = averagesByAge.collect()
 
 for result in results:
