@@ -35,3 +35,22 @@ results = filteredStations.collect()
 for result in results:
     print(result[0] + "\t{:.2f}F".format(result[1]))
 
+# Add section with max temp
+
+# Filter by entry_type
+# Return lines with entry_type "TMAX"
+maxTemps = parsedFile.filter(lambda x: "TMAX" in x[1])
+
+# Remove entry type
+maxTempStations = maxTemps.map(lambda x: (x[0], x[2]))
+
+# Get max temp for unique stations_id
+filteredMaxTemp = maxTempStations.reduceByKey(lambda x, y: max(x, y))
+
+# Collect result
+maxTempResult = filteredMaxTemp.collect()
+
+for result in maxTempResult:
+    print(result[0] + "\t{:.2f}F".format(result[1]))
+
+
