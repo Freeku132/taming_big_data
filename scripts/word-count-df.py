@@ -13,5 +13,7 @@ wordCounts = lowercase_words.groupBy('word').count()
 wordCounts.orderBy("count", ascending=False).show(10)
 wordCounts.orderBy(wordCounts['count'].desc()).show(10)
 wordCounts.sort(wordCounts['count'].desc()).show(10)
-wordCounts.sort(func.desc('count')).show(10)
+# .show(df.count()), it show all rows of df
+wordCounts.sort(func.desc('count')).show(wordCounts.count())
 
+spark.stop()
