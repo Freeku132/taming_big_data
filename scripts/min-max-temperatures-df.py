@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as func
-from pyspark.sql.types import StructType, StructField, StructType, StringType, IntegerType, FloatType
+from pyspark.sql.types import StructType, StructField, StringType, IntegerType, FloatType
 
 spark = SparkSession.builder.appName("Min and max temperatures").getOrCreate()
 
