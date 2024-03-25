@@ -1,6 +1,4 @@
-from pyspark import SparkContext
-from pyspark.streaming import StreamingContext
-from pyspark.sql import Row, SparkSession
+from pyspark.sql import SparkSession
 from pyspark.sql import functions as func
 
 from pyspark.sql.functions import regexp_extract
