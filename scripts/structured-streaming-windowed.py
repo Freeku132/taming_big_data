@@ -1,6 +1,7 @@
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 from pyspark.sql import Row, SparkSession
+from pyspark.sql import functions as func
 
 from pyspark.sql.functions import regexp_extract
 
@@ -24,13 +25,17 @@ logsDF = accessLines.select(regexp_extract('value', hostExp, 1).alias('host'),
                             regexp_extract('value', statusExp, 1).cast('integer').alias('status'),
                             regexp_extract('value', contentSizeExp, 1).cast('integer').alias('contentSize'))
 
-# Keep a running count of every access by status code
-statusCountsDF = logsDF.groupBy(logsDF.status).count()
+logsDF2 = logsDF.withColumn("eventTime", func.current_timestamp())
 
-# Kick off streaming query, dumping result to console
-query = (statusCountsDF.writeStream .outputMode("complete").format("console").queryName("counts").start())
+# Keep a running count of enpoints
+endpointCounts = logsDF2.groupBy(func.window(func.col("eventTime"), "30 seconds", "10 seconds"), func.col("endpoint")).count()
 
-# Run forever until terminated
+sortedEndpointCounts = endpointCounts.orderBy(func.col("count").desc())
+
+# Display the stream to the console
+query = sortedEndpointCounts.writeStream.outputMode("complete").format("console").queryName("counts").start()
+
+# Wait until terminate the scripts
 query.awaitTermination()
 
 spark.stop()
